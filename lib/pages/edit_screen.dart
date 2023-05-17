@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:reservapp/services/firebase_service.dart';
 
-class AddPersona extends StatefulWidget {
-  const AddPersona({super.key});
+class EditPersona extends StatefulWidget {
+  const EditPersona({super.key});
 
   @override
-  State<AddPersona> createState() => _AddPersonaState();
+  State<EditPersona> createState() => _EditPersonaState();
 }
 
-class _AddPersonaState extends State<AddPersona> {
+class _EditPersonaState extends State<EditPersona> {
   TextEditingController nameController = TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
+    final Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+
+    nameController.text = arguments['name'];
+
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('CRUD: Añadir persona', style: TextStyle(fontSize: 24)),
+        title: const Text('Modificar persona', style: TextStyle(fontSize: 24)),
       ),
       body: Builder(builder: (context) {
         return Padding(
@@ -25,16 +28,18 @@ class _AddPersonaState extends State<AddPersona> {
             children: [
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(
-                    hintText: 'Ingresar nombre de persona'),
+                decoration:
+                    const InputDecoration(hintText: 'Ingrese el nuevo nombre'),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  await addPeople(nameController.text).then((_) {
+                  await updatePeople(arguments['uid'], nameController.text)
+                      .then((_) {
+                    //actualizar
                     Navigator.pop(context);
                   });
                 },
-                child: const Text('Guardar'),
+                child: const Text('Actualizar'),
               ),
             ],
           ),
